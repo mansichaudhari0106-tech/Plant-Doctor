@@ -4,7 +4,7 @@ import streamlit as st
 try:
     API_BASE = st.secrets["API_BASE"]
 except Exception:
-    API_BASE = "http://localhost:8000"
+    API_BASE = "https://plant-doctor-rgk7.onrender.com"
 
 
 def _headers():
