@@ -15,6 +15,8 @@ class Settings:
     SUPABASE_ANON_KEY: str = os.getenv("SUPABASE_ANON_KEY", "")
     SUPABASE_JWT_SECRET: str = os.getenv("SUPABASE_JWT_SECRET", "")
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:8501")
+    # Public URL of this backend — used to build the OAuth callback URL
+    BACKEND_URL: str = os.getenv("BACKEND_URL", "http://localhost:8000")
 
     @property
     def DATABASE_URL(self) -> str:
