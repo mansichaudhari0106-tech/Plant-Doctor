@@ -246,26 +246,26 @@ def auth_screen():
 
         tab_login, tab_signup = st.tabs(["  Login  ", "  Sign Up  "])
 
-with tab_login:
-    # ── Google OAuth ──
-    st.markdown('<div style="height:12px"></div>', unsafe_allow_html=True)
+        with tab_login:
+            # ── Google OAuth ──
+            st.markdown('<div style="height:12px"></div>', unsafe_allow_html=True)
     
-    # Get Google OAuth URL from backend
-    if st.button("🔵  Continue with Google", use_container_width=True):
-        import requests
-        r = requests.get(f"{API_BASE}/auth/google/url")
-        if r.status_code == 200:
-            google_url = r.json()["url"]
-            st.markdown(f'<meta http-equiv="refresh" content="0;url={google_url}">',
+            # Get Google OAuth URL from backend
+            if st.button("🔵  Continue with Google", use_container_width=True):
+                import requests
+                r = requests.get(f"{API_BASE}/auth/google/url")
+                if r.status_code == 200:
+                    google_url = r.json()["url"]
+                    st.markdown(f'<meta http-equiv="refresh" content="0;url={google_url}">',
                         unsafe_allow_html=True)
-            st.info("Redirecting to Google...")
+                    st.info("Redirecting to Google...")
 
-    st.markdown("---")
-    st.caption("or login with email")
+            st.markdown("---")
+            st.caption("or login with email")
 
-    # Keep existing email/password login below...
-    email = st.text_input("Email", ...)
-    # rest stays the same
+            # Keep existing email/password login below...
+            email = st.text_input("Email", ...)
+            # rest stays the same
         with tab_signup:
             st.markdown('<div style="height:12px"></div>', unsafe_allow_html=True)
             email2 = st.text_input("Email", placeholder="you@example.com", key="su_email")
