@@ -250,16 +250,10 @@ def auth_screen():
 
         with tab_login:
             # ── Google OAuth ──
-            st.markdown('<div style="height:12px"></div>', unsafe_allow_html=True)
-    
-            # Get Google OAuth URL from backend
-            if st.button("🔵  Continue with Google", use_container_width=True):
-                r = requests.get(f"{API_BASE}/auth/google/url")
-                if r.status_code == 200:
-                    google_url = r.json()["url"]
-                    st.markdown(f'<meta http-equiv="refresh" content="0;url={google_url}">',
-                        unsafe_allow_html=True)
-                    st.info("Redirecting to Google...")
+            if st.button("🔵 Continue with Google", use_container_width=True):
+                data = api.google_oauth_url()
+                google_url = data["url"]
+                st.link_button("Continue to Google", google_url)
 
             st.markdown("---")
             st.caption("or login with email")
