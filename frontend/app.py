@@ -246,7 +246,7 @@ def auth_screen():
 
         tab_login, tab_signup = st.tabs(["  Login  ", "  Sign Up  "])
 
- with tab_login:
+with tab_login:
     # ── Google OAuth ──
     st.markdown('<div style="height:12px"></div>', unsafe_allow_html=True)
     
