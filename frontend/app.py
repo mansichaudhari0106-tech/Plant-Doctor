@@ -166,20 +166,14 @@ def auth_screen():
             google_col, _ = st.columns([1, 0.01])
             with google_col:
                 if st.button("🔵  Continue with Google", key="google_login", use_container_width=True):
-                    try:
-                        r = api.get_google_url()
-                        if r.status_code == 200:
-                            google_url = r.json()["url"]
-                            st.markdown(
-                                f'<meta http-equiv="refresh" content="0;url={google_url}">',
-                                unsafe_allow_html=True)
-                            st.info("Redirecting to Google... please wait.")
-                        else:
-                            st.error("Could not get Google login URL. Is Supabase configured?")
-                    except Exception as e:
-                        st.error(f"Error: {e}")
+                          try:
+                              r = api.get_google_url()
+                              st.write("Status:", r.status_code)
+                              st.write("URL:", r.json())
+                          except Exception as e:
+                              st.error(f"Error: {e}")
 
-            st.markdown('<div class="divider-text">or continue with email</div>', unsafe_allow_html=True)
+                      st.markdown('<div class="divider-text">or continue with email</div>', unsafe_allow_html=True)
 
             with st.form("login_form"):
                 email = st.text_input("Email", placeholder="you@example.com", key="li_email")
