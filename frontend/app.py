@@ -173,7 +173,7 @@ def auth_screen():
                           except Exception as e:
                               st.error(f"Error: {e}")
 
-                      st.markdown('<div class="divider-text">or continue with email</div>', unsafe_allow_html=True)
+                      #st.markdown('<div class="divider-text">or continue with email</div>', unsafe_allow_html=True)
 
             with st.form("login_form"):
                 email = st.text_input("Email", placeholder="you@example.com", key="li_email")
