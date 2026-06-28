@@ -7,6 +7,8 @@ from app.core.database import Base, engine
 from app.core.config import settings
 from app.routers import auth, plants, diagnosis
 
+from app.routers import oauth
+
 # Create tables (use Alembic migrations for production changes)
 Base.metadata.create_all(bind=engine)
 
@@ -27,7 +29,7 @@ app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads"
 app.include_router(auth.router)
 app.include_router(plants.router)
 app.include_router(diagnosis.router)
-
+app.include_router(oauth.router) 
 
 @app.get("/")
 def root():
