@@ -1,6 +1,7 @@
 import streamlit as st
 import api_client as api
 import json
+import requests
 
 st.set_page_config(page_title="Plant Doctor", page_icon="🌿", layout="wide")
 
@@ -253,7 +254,6 @@ def auth_screen():
     
             # Get Google OAuth URL from backend
             if st.button("🔵  Continue with Google", use_container_width=True):
-                import requests
                 r = requests.get(f"{API_BASE}/auth/google/url")
                 if r.status_code == 200:
                     google_url = r.json()["url"]
