@@ -18,20 +18,13 @@ def signup(email: str, password: str):
 
 
 def login(email: str, password: str):
-    # Handle OAuth callback — Supabase redirects back with #access_token=...
-    # Streamlit can't read URL fragments (#) directly, so use query params
-    params = st.query_params
-    if "access_token" in params:
-        token = params["access_token"]
-        r = requests.post(f"{API_BASE}/auth/google/callback",
-                          json={"supabase_access_token": token})
-        if r.status_code == 200:
-            st.session_state.token = r.json()["access_token"]
-            st.query_params.clear()
-            st.rerun()
     r = requests.post(f"{API_BASE}/auth/login", data={"username": email, "password": password})
     return r
 
+def google_oauth_url():
+    r = requests.get(f"{API_BASE}/auth/google/url")
+    r.raise_for_status()
+    return r.json()
 
 def list_plants():
     r = requests.get(f"{API_BASE}/plants", headers=_headers())
