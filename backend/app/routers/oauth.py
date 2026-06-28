@@ -14,26 +14,21 @@ router = APIRouter(prefix="/auth", tags=["oauth"])
 
 @router.get("/google/url")
 def google_login_url():
-    """Returns the Supabase Google OAuth URL."""
     if not settings.SUPABASE_URL:
         raise HTTPException(status_code=503, detail="Supabase not configured")
 
-    redirect_to = f"{settings.FRONTEND_URL}?oauth_callback=1"
+    # redirect_to points to OUR backend callback page which then forwards to Streamlit
+    redirect_to = f"{settings.BACKEND_URL}/auth/oauth/callback"
     url = (
         f"{settings.SUPABASE_URL}/auth/v1/authorize"
         f"?provider=google"
         f"&redirect_to={redirect_to}"
     )
-    return {"url": url}
+    return {"url": url, "redirect_to": redirect_to}
 
 
 @router.post("/google/callback", response_model=Token)
 def google_callback(payload: SupabaseTokenRequest, db: Session = Depends(get_db)):
-    """
-    Streamlit sends the Supabase access_token it received from the OAuth redirect.
-    We verify it against the Supabase JWT secret, find-or-create the user, 
-    and return our own app JWT.
-    """
     try:
         data = jwt.decode(
             payload.supabase_access_token,
@@ -62,33 +57,44 @@ def google_callback(payload: SupabaseTokenRequest, db: Session = Depends(get_db)
 @router.get("/oauth/callback", response_class=HTMLResponse)
 def oauth_callback_page():
     """
-    Supabase redirects here after Google login with #access_token=... in the URL fragment.
-    Fragments are not sent to servers, so we use JS to read it and pass it to Streamlit
-    via query params.
+    Supabase redirects here after Google login.
+    Reads the access_token from the URL fragment and forwards to Streamlit.
     """
-    html = f"""
-    <!DOCTYPE html>
-    <html>
-    <head><title>Logging you in...</title></head>
-    <body>
-        <p style="font-family:sans-serif;text-align:center;margin-top:80px;color:#2D6A4F">
-            🌿 Logging you in...
-        </p>
-        <script>
-            // Supabase puts the tokens in the URL hash fragment
-            const hash = window.location.hash.substring(1);
-            const params = new URLSearchParams(hash);
-            const accessToken = params.get('access_token');
+    html = f"""<!DOCTYPE html>
+<html>
+<head>
+    <title>Logging you in...</title>
+    <style>
+        body {{ font-family: sans-serif; text-align: center; margin-top: 80px; color: #2D6A4F; }}
+    </style>
+</head>
+<body>
+    <p style="font-size:48px">🌿</p>
+    <p>Logging you in with Google...</p>
+    <script>
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const accessToken = params.get('access_token');
+        const error = params.get('error_description') || params.get('error');
 
-            if (accessToken) {{
-                // Redirect to Streamlit with the token as a query param
-                const streamlitUrl = '{settings.FRONTEND_URL}';
-                window.location.href = streamlitUrl + '?access_token=' + encodeURIComponent(accessToken) + '&oauth_callback=1';
+        if (accessToken) {{
+            window.location.href = '{settings.FRONTEND_URL}?access_token=' + encodeURIComponent(accessToken) + '&oauth_callback=1';
+        }} else if (error) {{
+            document.body.innerHTML += '<p style="color:red">Error: ' + error + '</p>';
+        }} else {{
+            // Try query params as fallback
+            const qParams = new URLSearchParams(window.location.search);
+            const qToken = qParams.get('access_token');
+            if (qToken) {{
+                window.location.href = '{settings.FRONTEND_URL}?access_token=' + encodeURIComponent(qToken) + '&oauth_callback=1';
             }} else {{
-                document.body.innerHTML += '<p style="color:red;text-align:center">Login failed. No token received.</p>';
+                document.body.innerHTML += '<p style="color:red">No token received.</p>';
+                document.body.innerHTML += '<pre style="font-size:11px;text-align:left;margin:20px auto;max-width:600px;background:#f5f5f5;padding:12px">'
+                    + 'Hash: ' + window.location.hash + '\\n'
+                    + 'Search: ' + window.location.search + '</pre>';
             }}
-        </script>
-    </body>
-    </html>
-    """
+        }}
+    </script>
+</body>
+</html>"""
     return html
