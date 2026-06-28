@@ -163,7 +163,7 @@ def auth_screen():
             st.markdown('<div style="height:12px"></div>', unsafe_allow_html=True)
 
             # ── Google OAuth button ──
-            google_col, _ = st.columns([1, 0.01])
+           ''' google_col, _ = st.columns([1, 0.01])
             with google_col:
                 if st.button("🔵  Continue with Google", key="google_login", use_container_width=True):
                           try:
@@ -213,7 +213,7 @@ def auth_screen():
                     if r.status_code == 201:
                         st.success("Account created! Please log in.")
                     else:
-                        st.error(r.json().get("detail", "Signup failed"))
+                        st.error(r.json().get("detail", "Signup failed"))'''
 
 
 # ══════════════════════════════════════════════════════════════════════════════
