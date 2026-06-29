@@ -122,6 +122,8 @@ if "access_token" in params and st.session_state.token is None:
     with st.spinner("Logging you in with Google..."):
         try:
             r = api.google_callback(params["access_token"])
+            st.write("Status:", r.status_code)
+            st.write("Response:", r.json())
             if r.status_code == 200:
                 st.session_state.token = r.json()["access_token"]
                 try:
