@@ -160,7 +160,7 @@ def auth_screen():
         <div style="text-align:center;margin-bottom:32px">
             <div style="font-size:56px">🌿</div>
             <div style="font-size:28px;font-weight:800;color:#2D6A4F;margin:8px 0 4px">Plant Doctor</div>
-            <div style="font-size:14px;color:#6b7280">AI-powered plant diagnosis and care guidance</div>
+            <div style="font-size:14px;color:#6b7280">AI powered plant diagnosis, care planning and recovery tracking.</div>
         </div>""", unsafe_allow_html=True)
 
         tab_login, tab_signup = st.tabs(["  Login  ", "  Sign Up  "])
